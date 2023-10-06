@@ -54,4 +54,47 @@ const deleteItem = (req, res) => {
     });
 };
 
-module.exports = { createItem, getItems, updateItem, deleteItem };
+//like an item
+const likeAnItem = (req, res) => {
+  const userId = req.user._id;
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $addToSet: { likes: userId } }, // add _id to the array if it's not there yet
+    { new: true },
+  )
+    .orFail()
+    .then((item) => {
+      res.status(200).send({ data: item });
+    })
+    .catch((e) => {
+      res.status(500).send({ message: "Error from likeAnItem", e });
+      console.log(e);
+    });
+};
+
+//Dislike an item
+const unlikeAnItem = (req, res) => {
+  const userId = req.user._id;
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $pull: { likes: userId } }, // remove _id from the array
+    { new: true },
+  )
+    .orFail()
+    .then((item) => {
+      res.status(200).send({ data: item });
+    })
+    .catch((e) => {
+      res.status(500).send({ message: "Error from likeAnItem", e });
+      console.log(e);
+    });
+};
+
+module.exports = {
+  createItem,
+  getItems,
+  updateItem,
+  deleteItem,
+  likeAnItem,
+  unlikeAnItem,
+};

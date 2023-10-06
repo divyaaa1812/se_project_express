@@ -30,7 +30,7 @@ const clothingItem = new mongoose.Schema({
   likes: [
     {
       type: mongoose.ObjectId,
-      ref: "user", // Replace 'User' with the actual name of the user model
+      ref: "user",
       default: [],
     },
   ],
