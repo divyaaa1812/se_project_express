@@ -8,11 +8,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db", (r) => {
   console.log("connected to DB", r);
 });
 
-//define routes
-const routes = require("./routes");
-app.use(express.json());
-app.use(routes);
-
 //middleware
 app.use((req, res, next) => {
   req.user = {
@@ -20,6 +15,11 @@ app.use((req, res, next) => {
   };
   next();
 });
+
+//define routes
+const routes = require("./routes");
+app.use(express.json());
+app.use(routes);
 
 //calling server by passing in port variable
 app.listen(PORT, () => {

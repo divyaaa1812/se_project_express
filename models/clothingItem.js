@@ -23,8 +23,8 @@ const clothingItem = new mongoose.Schema({
     },
   },
   owner: {
-    type: mongoose.ObjectId,
     required: true,
+    type: mongoose.ObjectId,
     ref: "user",
   },
   likes: [

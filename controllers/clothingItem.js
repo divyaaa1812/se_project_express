@@ -5,8 +5,9 @@ const ClothingItem = require("../models/clothingItem");
 //create method to perform post operation to add new items to DB
 const createItem = (req, res) => {
   //extract data from body request
+  const author = req.user._id;
   const { name, weather, imageURL } = req.body;
-  ClothingItem.create({ name, weather, imageURL })
+  ClothingItem.create({ name, weather, imageURL, owner: author })
     .then((data) => {
       console.log(data);
       res.send({ item: data }); //sending back data in response
