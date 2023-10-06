@@ -16,7 +16,7 @@ const getUsers = (req, res) => {
 
 // check whether the user exists
 const doesUserExist = (req, res, next) => {
-  const { userId } = req.params;
+  const userId = req._id;
   if (!userId) {
     res.send(`This user doesn't exist`);
     return;
@@ -27,6 +27,7 @@ const getUserById = (req, res) => {
   const { userId } = req.params;
   users
     .findById(userId)
+    .orFail()
     .then((data) => {
       res.send({ data });
     })

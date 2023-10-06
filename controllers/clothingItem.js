@@ -21,6 +21,7 @@ const createItem = (req, res) => {
 //create method to perform get operation to retrieve items from DB
 const getItems = (req, res) => {
   ClothingItem.find({})
+    .orFail()
     .then((items) => res.status(200).send(items))
     .catch((e) => {
       res.status(500).send({ message: "Error from get closthing item", e });
