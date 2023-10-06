@@ -1,8 +1,7 @@
 //create controllers
 const users = require("../models/user");
 
-//create method to perform get/post/put operation to add new items to DB
-
+//create methods to perform get/post/put operation to add new items to DB
 const getUsers = (req, res) => {
   users
     .find()
@@ -17,34 +16,38 @@ const getUsers = (req, res) => {
 
 // check whether the user exists
 const doesUserExist = (req, res, next) => {
-  if (!users[req.params.id]) {
+  const { userId } = req.params;
+  if (!userId) {
     res.send(`This user doesn't exist`);
     return;
   }
   next(); // call the next function
 };
-
-const getUser = (req, res) => {
-  const { name, avatar } = users[req.params.id];
-  res.send(`User ${name}, with image - ${avatar}`);
-};
-
-const createUser = (req, res) => {
-  console.log(req);
-  console.log(req.body);
-
-  //extract data from body request
-  const { name, avatar } = req.body;
-
+const getUserById = (req, res) => {
+  const { userId } = req.params;
   users
-    .create({ name, avatar })
+    .findById(userId)
     .then((data) => {
-      console.log(data);
-      res.send({ data: item }); //sending back data in response
+      res.send({ data });
     })
     .catch((e) => {
-      res.status(500).send({ message: "Error adding user", e });
+      res.status(500).send({ message: "Error fetching users", e });
+      console.log(e);
     });
 };
 
-module.exports = { getUsers, doesUserExist, getUser, createUser };
+const createUser = (req, res) => {
+  //extract data from body request
+  const { name, avatar } = req.body;
+  users
+    .create({ name, avatar })
+    .then((data) => {
+      res.send({ data }); //sending back data in response
+    })
+    .catch((e) => {
+      res.status(500).send({ message: "Error adding user", e });
+      console.log(e);
+    });
+};
+
+module.exports = { getUsers, doesUserExist, getUserById, createUser };
