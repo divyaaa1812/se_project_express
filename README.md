@@ -12,7 +12,7 @@ The back-end of this project is focused on creating a server for the WTWR applic
 
 ### Testing
 
-Tests running on CI
+Database - mongodb://localhost:27017
 
 ## Technologies Used
 
