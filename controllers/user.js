@@ -1,28 +1,29 @@
-//create controllers
+// create controllers
 const users = require("../models/user");
+const statusCode = require("../utils/constants");
 
-//create methods to perform get/post/put operation to add new items to DB
+// create methods to perform get/post/put operation to add new items to DB
 const getUsers = (req, res) => {
   users
     .find()
     .then((data) => {
-      res.send({ data }); //sending back data in response
+      res.send({ data });
     })
     .catch((e) => {
-      console.log(e);
-      res.status(500).send({ message: "Error fetching users", e });
+      res.status(statusCode.DEFAULT).send({ message: "Error fetching users" });
     });
 };
 
-// check whether the user exists
-const doesUserExist = (req, res, next) => {
-  const userId = req._id;
-  if (!userId) {
-    res.send(`This user doesn't exist`);
-    return;
-  }
-  next(); // call the next function
-};
+// // check whether the user exists
+// const doesUserExist = (req, res, next) => {
+//   const userId = req._id;
+//   if (!userId) {
+//     res.send(`This user doesn't exist`);
+//     return;
+//   }
+//   next(); // call the next function
+// };
+
 const getUserById = (req, res) => {
   const { userId } = req.params;
   users
@@ -32,23 +33,22 @@ const getUserById = (req, res) => {
       res.send({ data });
     })
     .catch((e) => {
-      res.status(500).send({ message: "Error fetching users", e });
-      console.log(e);
+      res.status(statusCode.DEFAULT).send({ message: "Error fetching users" });
     });
 };
 
 const createUser = (req, res) => {
-  //extract data from body request
+  // extract data from body request
   const { name, avatar } = req.body;
   users
     .create({ name, avatar })
     .then((data) => {
-      res.send({ data }); //sending back data in response
+      // sending back data in response
+      res.send({ data });
     })
     .catch((e) => {
-      res.status(500).send({ message: "Error adding user", e });
-      console.log(e);
+      res.status(statusCode.DEFAULT).send({ message: "Error adding user" });
     });
 };
 
-module.exports = { getUsers, doesUserExist, getUserById, createUser };
+module.exports = { getUsers, getUserById, createUser };
