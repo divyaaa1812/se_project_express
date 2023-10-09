@@ -7,18 +7,19 @@ const statusCode = require("../utils/constants");
 const createItem = (req, res) => {
   // extract data from body request
   const author = req.user._id;
-  const { name, weather, imageURL } = req.body;
-  ClothingItem.create({ name, weather, imageURL, owner: author })
+  const { name, weather, imageUrl } = req.body;
+  ClothingItem.create({ name, weather, imageUrl, owner: author })
     .then((data) => {
       res.send({ item: data });
     })
     .catch((e) => {
       if (e.name === "ValidationError") {
         res.status(statusCode.BAD_REQUEST).send({
-          message: `An unknown error "${err.name} "has occurred: ${err.message}`,
+          message: `Invalid request data`,
         });
+      } else {
+        res.status(statusCode.DEFAULT).send({ message: "Error adding item" });
       }
-      res.status(statusCode.DEFAULT).send({ message: "Error adding item" });
     });
 };
 
@@ -27,7 +28,7 @@ const getItems = (req, res) => {
   ClothingItem.find({})
     .orFail()
     .then((items) => res.send(items))
-    .catch((e) => {
+    .catch(() => {
       res
         .status(statusCode.DEFAULT)
         .send({ message: "Error from get clothing item" });
@@ -52,17 +53,23 @@ const getItems = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndRemove(itemId)
-    .then(() => res.status(204).send({}))
+    .orFail()
+    .then(() => res.status(statusCode.SUCCESS).send({ message: "200 Ok" }))
     .catch((e) => {
-      if (e.name === "DocumentNotFoundError" || e.name === "CastError") {
+      if (e.name === "DocumentNotFoundError") {
         // send the error
-        res.status(statusCode.BAD_REQUEST).send({
-          message: `An unknown error "${e.name} "has occurred: ${e.message}`,
+        res.status(statusCode.NOT_FOUND).send({
+          message: "Not found",
         });
+      } else if (e.name === "CastError") {
+        res.status(statusCode.BAD_REQUEST).send({
+          message: "CastError",
+        });
+      } else {
+        res
+          .status(statusCode.DEFAULT)
+          .send({ message: "Error from delete item" });
       }
-      res
-        .status(statusCode.DEFAULT)
-        .send({ message: "Error from delete item" });
     });
 };
 
@@ -80,13 +87,20 @@ const likeAnItem = (req, res) => {
       res.send({ data: item });
     })
     .catch((e) => {
-      if (e.name === "DocumentNotFoundError" || e.name === "CastError") {
+      if (e.name === "CastError") {
         // send the error
         res.status(statusCode.BAD_REQUEST).send({
-          message: `An unknown error "${e.name} "has occurred: ${e.message}`,
+          message: "Cast error",
         });
+      } else if (e.name === "DocumentNotFoundError") {
+        res.status(statusCode.NOT_FOUND).send({
+          message: "Not found",
+        });
+      } else {
+        res
+          .status(statusCode.DEFAULT)
+          .send({ message: "Error from likeAnItem" });
       }
-      res.status(statusCode.DEFAULT).send({ message: "Error from likeAnItem" });
     });
 };
 
@@ -104,13 +118,20 @@ const unlikeAnItem = (req, res) => {
       res.send({ data: item });
     })
     .catch((e) => {
-      if (e.name === "DocumentNotFoundError" || e.name === "CastError") {
+      if (e.name === "CastError") {
         // send the error
         res.status(statusCode.BAD_REQUEST).send({
-          message: `An unknown error "${e.name} "has occurred: ${e.message}`,
+          message: "cast error",
         });
+      } else if (e.name === "DocumentNotFoundError") {
+        res.status(statusCode.NOT_FOUND).send({
+          message: "Not Found",
+        });
+      } else {
+        res
+          .status(statusCode.DEFAULT)
+          .send({ message: "Error from likeAnItem" });
       }
-      res.status(statusCode.DEFAULT).send({ message: "Error from likeAnItem" });
     });
 };
 

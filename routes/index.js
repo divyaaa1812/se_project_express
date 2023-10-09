@@ -6,7 +6,7 @@ const statusCode = require("../utils/constants");
 router.use("/users", users);
 router.use("/items", clothingItem);
 
-router.use((req, res, err) => {
+router.use((req, res) => {
   res
     .status(statusCode.NOT_FOUND)
     .send({ message: "Requested resource not found" });
