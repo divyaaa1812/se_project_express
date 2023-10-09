@@ -33,6 +33,12 @@ const getUserById = (req, res) => {
       res.send({ data });
     })
     .catch((e) => {
+      if (e.name === "DocumentNotFoundError" || e.name === "CastError") {
+        // send the error
+        res.status(statusCode.BAD_REQUEST).send({
+          message: `An unknown error "${e.name} "has occurred: ${e.message}`,
+        });
+      }
       res.status(statusCode.DEFAULT).send({ message: "Error fetching users" });
     });
 };
@@ -47,6 +53,11 @@ const createUser = (req, res) => {
       res.send({ data });
     })
     .catch((e) => {
+      if (e.name === "ValidationError") {
+        res.status(statusCode.BAD_REQUEST).send({
+          message: `An unknown error "${e.name} "has occurred: ${e.message}`,
+        });
+      }
       res.status(statusCode.DEFAULT).send({ message: "Error adding user" });
     });
 };

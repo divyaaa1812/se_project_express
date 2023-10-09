@@ -6,9 +6,9 @@ const statusCode = require("../utils/constants");
 router.use("/users", users);
 router.use("/items", clothingItem);
 
-router.use((req, res) => {
+router.use((req, res, err) => {
   res
-    .status(statusCode.DEFAULT)
+    .status(statusCode.NOT_FOUND)
     .send({ message: "Requested resource not found" });
 });
 

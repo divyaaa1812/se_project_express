@@ -14,7 +14,9 @@ const createItem = (req, res) => {
     })
     .catch((e) => {
       if (e.name === "ValidationError") {
-        res.status(statusCode.BAD_REQUEST).send({ message: "" });
+        res.status(statusCode.BAD_REQUEST).send({
+          message: `An unknown error "${err.name} "has occurred: ${err.message}`,
+        });
       }
       res.status(statusCode.DEFAULT).send({ message: "Error adding item" });
     });
@@ -52,9 +54,11 @@ const deleteItem = (req, res) => {
   ClothingItem.findByIdAndRemove(itemId)
     .then(() => res.status(204).send({}))
     .catch((e) => {
-      if (e.name === "DocumentNotFoundError") {
+      if (e.name === "DocumentNotFoundError" || e.name === "CastError") {
         // send the error
-        res.status(statusCode.BAD_REQUEST).send(e.name);
+        res.status(statusCode.BAD_REQUEST).send({
+          message: `An unknown error "${e.name} "has occurred: ${e.message}`,
+        });
       }
       res
         .status(statusCode.DEFAULT)
@@ -76,6 +80,12 @@ const likeAnItem = (req, res) => {
       res.send({ data: item });
     })
     .catch((e) => {
+      if (e.name === "DocumentNotFoundError" || e.name === "CastError") {
+        // send the error
+        res.status(statusCode.BAD_REQUEST).send({
+          message: `An unknown error "${e.name} "has occurred: ${e.message}`,
+        });
+      }
       res.status(statusCode.DEFAULT).send({ message: "Error from likeAnItem" });
     });
 };
@@ -94,6 +104,12 @@ const unlikeAnItem = (req, res) => {
       res.send({ data: item });
     })
     .catch((e) => {
+      if (e.name === "DocumentNotFoundError" || e.name === "CastError") {
+        // send the error
+        res.status(statusCode.BAD_REQUEST).send({
+          message: `An unknown error "${e.name} "has occurred: ${e.message}`,
+        });
+      }
       res.status(statusCode.DEFAULT).send({ message: "Error from likeAnItem" });
     });
 };
