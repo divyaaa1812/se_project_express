@@ -1,6 +1,7 @@
 // create controllers
 const users = require("../models/user");
 const statusCode = require("../utils/constants");
+const bcrypt = require("bcryptjs");
 
 // create methods to perform get/post/put operation to add new items to DB
 const getUsers = (req, res) => {
@@ -52,13 +53,24 @@ const getUserById = (req, res) => {
 
 const createUser = (req, res) => {
   // extract data from body request
-  const { name, avatar } = req.body;
-  users
-    .create({ name, avatar })
-    .then((data) => {
-      // sending back data in response
-      res.send({ data });
-    })
+  const { name, avatar, email, password } = req.body;
+  bcrypt
+    .hash(password, 10)
+    .then((hash) =>
+      users
+        .findOne(email)
+        .orFail()
+        .create({ name, avatar, email, password: hash })
+        .then((data) => {
+          // sending back data in response
+          res.send({ data });
+        }),
+    )
+    // .throw((e) => {
+    //   res
+    //     .status(statusCode.DUPLICATE_RECORD)
+    //     .send({ message: "Email already exists" });
+    // })
     .catch((e) => {
       if (e.name === "ValidationError") {
         res.status(statusCode.BAD_REQUEST).send({
