@@ -2,13 +2,16 @@ const statusCode = require("../utils/constants");
 const JWT_SECRET = require("../utils/config");
 
 const handleAuthorization = (req, res) => {
+  // get authorization from the header
   const { authorization } = req.headers;
+
+  // check the header exists and starts with 'Bearer '
   if (!authorization || !authorization.startsWith("Bearer ")) {
     return res
       .status(statusCode.AUTHORIZATION_ERROR)
       .send({ message: "authorization error" });
   }
-
+  //get token
   const token = authorization.replace("Bearer ", "");
   let payload;
   try {
@@ -17,7 +20,7 @@ const handleAuthorization = (req, res) => {
     return res.status(statusCode.AUTHORIZATION_ERROR);
   }
   req.user = payload;
-  return next();
+  next();
 };
 
 module.exports = handleAuthorization;

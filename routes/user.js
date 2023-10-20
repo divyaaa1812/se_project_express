@@ -1,6 +1,6 @@
 // import router to work with CRUD operations
 const router = require("express").Router();
-const { handleAuthorization } = require("../middlewares/auth");
+const handleAuthorization = require("../middlewares/auth");
 
 const {
   createUser,

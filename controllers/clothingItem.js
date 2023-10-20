@@ -6,11 +6,10 @@ const statusCode = require("../utils/constants");
 // create method to perform post operation to add new items to DB
 const createItem = (req, res) => {
   // extract data from body request
-  const author = req.user._id;
   const { name, weather, imageUrl } = req.body;
-  ClothingItem.create({ name, weather, imageUrl, owner: author })
-    .then((data) => {
-      res.send({ item: data });
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
+    .then((item) => {
+      res.send({ data: item });
     })
     .catch((e) => {
       if (e.name === "ValidationError") {
@@ -53,7 +52,7 @@ const getItems = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findById(itemId).then((item) => {
-    if (userId !== item.owner) {
+    if (userId !== item.owner.toString()) {
       return res
         .status(statusCode.FORBIDDEN)
         .send({ message: "No Access to perform this action" });
