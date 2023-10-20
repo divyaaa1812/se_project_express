@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const routes = require("./routes");
+const cors = require("cors");
 
 // instance of express application
 const app = express();
@@ -14,6 +15,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db", () => {
 // define routes
 app.use(express.json());
 app.use(routes);
+app.use(cors());
 
 // calling server by passing in port variable
 app.listen(PORT, () => {
