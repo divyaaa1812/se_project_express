@@ -4,6 +4,7 @@ const DEFAULT = 500;
 const SUCCESS = 200;
 const DUPLICATE_RECORD = 11000;
 const AUTHORIZATION_ERROR = 401;
+const FORBIDDEN = 403;
 
 module.exports = {
   BAD_REQUEST,
@@ -12,4 +13,5 @@ module.exports = {
   SUCCESS,
   DUPLICATE_RECORD,
   AUTHORIZATION_ERROR,
+  FORBIDDEN,
 };
