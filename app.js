@@ -11,14 +11,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db", () => {
   console.log("connected to DB");
 });
 
-// middleware
-app.use((req, res, next) => {
-  req.user = {
-    _id: "651f98501f2952157b09cd18",
-  };
-  next();
-});
-
 // define routes
 app.use(express.json());
 app.use(routes);
