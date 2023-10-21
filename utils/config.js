@@ -1,3 +1,3 @@
-const { JWT_SECRET = "secret-pass-code-123" } = process.env;
+const { JWT_SECRET = "pass123$" } = process.env;
 
 module.exports = { JWT_SECRET };

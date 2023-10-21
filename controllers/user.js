@@ -1,8 +1,10 @@
 // create controllers
 const user = require("../models/user");
 const users = require("../models/user");
+const { JWT_SECRET } = require("../utils/config");
 const statusCode = require("../utils/constants");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 // create methods to perform get/post/put operation to add new items to DB
 const getUsers = (req, res) => {
@@ -53,8 +55,6 @@ const getUserById = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  console.log(req);
-  console.log(req.body);
   const { name, avatar, email, password } = req.body;
   users
     .findOne({ email })
@@ -92,12 +92,17 @@ const createUser = (req, res) => {
     });
 };
 
+// controllers/users.js
+
 const login = (req, res) => {
   const { email, password } = req.body;
   return users
     .findUserByCredentials(email, password)
     .then((user) => {
+      // authentication successful! user is in the user variable
       console.log(user);
+      console.log(JWT_SECRET);
+      //create a token
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
