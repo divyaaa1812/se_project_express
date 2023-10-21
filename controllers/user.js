@@ -121,17 +121,28 @@ const login = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { _id: userId } = req.user;
+  const userId = req.user._id;
+  console.log(userId);
   user
     .findById(userId)
+    .orFail()
     .then((user) => {
-      if (!user) {
-        res.status(NOT_FOUND).send({ message: "User not found" });
-      }
       res.send(user);
     })
-    .catch((err) => {
-      handleHttpError(req, res, err);
+    .catch(() => {
+      if (err.name === "DocumentNotFoundError") {
+        res.status(statusCode.NOT_FOUND).send({
+          message: "User Not Found",
+        });
+      } else if (err.name === "CastError") {
+        res.status(statusCode.BAD_REQUEST).send({
+          message: "Invalid request.",
+        });
+      } else {
+        res
+          .status(DEFAULT_ERROR)
+          .send({ message: "An error has occurred on the server." });
+      }
     });
 };
 
@@ -145,10 +156,26 @@ const updateUser = (req, res) => {
       { new: true, runValidators: true },
     )
     .then((user) => {
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
-      handleHttpError(req, res, err);
+      if (err.name === "DocumentNotFoundError") {
+        res.status(statusCode.NOT_FOUND).send({
+          message: "No records",
+        });
+      } else if (err.name === "CastError") {
+        res.status(statusCode.BAD_REQUEST).send({
+          message: "Invalid Request data.",
+        });
+      } else if (err.name === "ValidatorError") {
+        res.status(statusCode.BAD_REQUEST).send({
+          message: "validation error.",
+        });
+      } else {
+        res
+          .status(DEFAULT_ERROR)
+          .send({ message: "An error has occurred on the server." });
+      }
     });
 };
 
