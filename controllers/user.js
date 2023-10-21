@@ -116,8 +116,7 @@ const login = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const userId = req._id;
-  console.log(userId);
+  const userId = req.params._id;
   users
     .findById(userId)
     .orFail()
