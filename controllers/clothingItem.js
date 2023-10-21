@@ -52,7 +52,7 @@ const getItems = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findById(itemId).then((item) => {
-    if (userId !== item.owner.toString()) {
+    if (req.params._id !== item.owner.toString()) {
       return res
         .status(statusCode.FORBIDDEN)
         .send({ message: "No Access to perform this action" });
