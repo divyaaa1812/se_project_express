@@ -10,7 +10,7 @@ const {
 } = require("../controllers/clothingItem");
 
 // add post to clothing item
-router.post("/", createItem);
+router.post("/", handleAuthorization, createItem);
 router.get("/", getItems);
 // router.put("/:itemId", updateItem);
 router.delete("/:itemId", handleAuthorization, deleteItem);

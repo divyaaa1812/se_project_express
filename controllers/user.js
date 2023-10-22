@@ -5,54 +5,6 @@ const users = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const statusCode = require("../utils/constants");
 
-// create methods to perform get/post/put operation to add new items to DB
-const getUsers = (req, res) => {
-  users
-    .find()
-    .then((data) => {
-      res.send({ data });
-    })
-    .catch(() => {
-      res.status(statusCode.DEFAULT).send({ message: "Error fetching users" });
-    });
-};
-
-// // check whether the user exists
-// const doesUserExist = (req, res, next) => {
-//   const userId = req._id;
-//   if (!userId) {
-//     res.send(`This user doesn't exist`);
-//     return;
-//   }
-//   next(); // call the next function
-// };
-
-const getUserById = (req, res) => {
-  const { userId } = req.params;
-  users
-    .findById(userId)
-    .orFail()
-    .then((data) => {
-      res.send({ data });
-    })
-    .catch((e) => {
-      if (e.name === "DocumentNotFoundError") {
-        // send the error
-        res.status(statusCode.NOT_FOUND).send({
-          message: "Not found",
-        });
-      } else if (e.name === "CastError") {
-        res.status(statusCode.BAD_REQUEST).send({
-          message: "cast error",
-        });
-      } else {
-        res
-          .status(statusCode.DEFAULT)
-          .send({ message: "Error fetching users" });
-      }
-    });
-};
-
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
   users
@@ -68,25 +20,30 @@ const createUser = (req, res) => {
           users
             .create({ name, avatar, email, password: hash })
             .then((newUser) => {
-              console.log(newUser);
               res
                 .status(statusCode.SUCCESS)
-                .send({ name, avatar, email, _id: user._id });
+                .send({ name, avatar, email, _id: newUser._id });
             })
             .catch((e) => {
-              console.error(e);
               if (e.name && e.name === "ValidationError") {
                 return res
                   .status(statusCode.BAD_REQUEST)
                   .send({ message: "Bad Request" });
               }
-              console.log("throwing a server error");
               return res
                 .status(statusCode.DEFAULT)
                 .send({ message: "Server Error" });
             }),
         );
       }
+    })
+    .catch((e) => {
+      if (e.name === "ValidationError") {
+        return res
+          .status(statusCode.BAD_REQUEST)
+          .send({ message: "Bad Request" });
+      }
+      return res.status(statusCode.DEFAULT).send({ message: "Server Error" });
     });
 };
 
@@ -104,19 +61,17 @@ const login = (req, res) => {
       res.status(201).send({ token });
     })
     .catch((e) => {
-      console.error(e);
-      if (e.name === "Validation Error") {
+      if (e.message === "Incorrect email or password") {
         return res
           .status(statusCode.AUTHORIZATION_ERROR)
           .send({ message: "Authorization Error" });
       }
-      console.log("throwing a server error");
       return res.status(statusCode.DEFAULT).send({ message: "Server Error" });
     });
 };
 
 const getCurrentUser = (req, res) => {
-  const userId = req.params._id;
+  const userId = req.user._id;
   users
     .findById(userId)
     .orFail()
@@ -142,7 +97,7 @@ const getCurrentUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
-  const userId = req._id;
+  const userId = req.user._id;
   users
     .findByIdAndUpdate(
       userId,
@@ -161,17 +116,19 @@ const updateUser = (req, res) => {
         res.status(statusCode.BAD_REQUEST).send({
           message: "Invalid Request data.",
         });
-      } else if (err.name === "ValidatorError") {
+      } else if (err.name === "ValidationError") {
         res.status(statusCode.BAD_REQUEST).send({
           message: "validation error.",
         });
+      } else {
+        res
+          .status(statusCode.DEFAULT)
+          .send({ message: "An error has occurred on the server." });
       }
     });
 };
 
 module.exports = {
-  getUsers,
-  getUserById,
   createUser,
   login,
   getCurrentUser,
