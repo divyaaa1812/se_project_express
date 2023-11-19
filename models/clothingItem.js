@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 
 // define clothing item schema
-const clothingItem = new mongoose.Schema({
+const clothingitems = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -40,4 +40,4 @@ const clothingItem = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("clothingitems", clothingItem);
+module.exports = mongoose.model("clothingitems", clothingitems);

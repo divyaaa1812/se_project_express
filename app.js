@@ -20,6 +20,8 @@ app.use(
     methods: "*",
   }),
 );
+// app.use(cors());
+// app.options("*", cors());
 app.use(routes);
 
 // calling server by passing in port variable

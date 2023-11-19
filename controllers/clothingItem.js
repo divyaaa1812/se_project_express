@@ -1,5 +1,4 @@
 // create controllers
-
 const ClothingItem = require("../models/clothingItem");
 const statusCode = require("../utils/constants");
 
