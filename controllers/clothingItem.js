@@ -3,14 +3,16 @@ const ClothingItem = require("../models/clothingItem");
 const statusCode = require("../utils/constants");
 
 // create method to perform post operation to add new items to DB
-const createItem = (req, res) => {
+const addItem = (req, res) => {
   // extract data from body request
   const { name, weather, imageUrl } = req.body;
+  console.log({ name, weather, imageUrl });
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => {
       res.send({ data: item });
     })
     .catch((e) => {
+      console.log(e);
       if (e.name === "ValidationError") {
         res.status(statusCode.BAD_REQUEST).send({
           message: `Invalid request data`,
@@ -145,7 +147,7 @@ const unlikeAnItem = (req, res) => {
 };
 
 module.exports = {
-  createItem,
+  addItem,
   getItems,
   deleteItem,
   likeAnItem,

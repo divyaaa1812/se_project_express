@@ -2,7 +2,7 @@
 const router = require("express").Router();
 const handleAuthorization = require("../middlewares/auth");
 const {
-  createItem,
+  addItem,
   getItems,
   deleteItem,
   likeAnItem,
@@ -10,7 +10,7 @@ const {
 } = require("../controllers/clothingItem");
 
 // add post to clothing item
-router.post("/", handleAuthorization, createItem);
+router.post("/", handleAuthorization, addItem);
 router.get("/", getItems);
 // router.put("/:itemId", updateItem);
 router.delete("/:itemId", handleAuthorization, deleteItem);
