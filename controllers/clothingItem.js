@@ -6,7 +6,6 @@ const statusCode = require("../utils/constants");
 const addItem = (req, res) => {
   // extract data from body request
   const { name, weather, imageUrl } = req.body;
-  console.log({ name, weather, imageUrl });
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => {
       res.send({ data: item });
@@ -86,11 +85,10 @@ const deleteItem = (req, res) => {
 
 // like an item
 const likeAnItem = (req, res) => {
-  const userId = req.user._id;
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     // add _id to the array if it's not there yet
-    { $addToSet: { likes: userId } },
+    { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .orFail()
@@ -117,11 +115,10 @@ const likeAnItem = (req, res) => {
 
 // Dislike an item
 const unlikeAnItem = (req, res) => {
-  const userId = req.user._id;
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     // remove _id from the array
-    { $pull: { likes: userId } },
+    { $pull: { likes: req.user._id } },
     { new: true },
   )
     .orFail()
