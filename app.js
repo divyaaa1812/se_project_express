@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const routes = require("./routes");
-const errorHandler = require("./middlewares/errorHandler");
 
 // instance of express application
 const app = express();
