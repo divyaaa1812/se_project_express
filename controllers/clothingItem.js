@@ -1,6 +1,7 @@
 // create controllers
 const ClothingItem = require("../models/clothingItem");
 const statusCode = require("../utils/constants");
+const BadRequestError = require("../errors/badRequestError");
 
 // create method to perform post operation to add new items to DB
 const addItem = (req, res) => {
@@ -10,16 +11,23 @@ const addItem = (req, res) => {
     .then((item) => {
       res.send({ data: item });
     })
-    .catch((e) => {
-      console.log(e);
-      if (e.name === "ValidationError") {
-        res.status(statusCode.BAD_REQUEST).send({
-          message: `Invalid request data`,
-        });
+    .catch((err) => {
+      if (err.name === "CastError") {
+        next(new BadRequestError("Invalid request data"));
       } else {
-        res.status(statusCode.DEFAULT).send({ message: "Error adding item" });
+        next(err);
       }
     });
+  // .catch((e) => {
+  //   console.log(e);
+  //   if (e.name === "ValidationError") {
+  //     res.status(statusCode.BAD_REQUEST).send({
+  //       message: `Invalid request data`,
+  //     });
+  //   } else {
+  //     res.status(statusCode.DEFAULT).send({ message: "Error adding item" });
+  //   }
+  // });
 };
 
 // create method to perform get operation to retrieve items from DB
