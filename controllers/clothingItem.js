@@ -2,6 +2,10 @@
 const ClothingItem = require("../models/clothingItem");
 const statusCode = require("../utils/constants");
 const BadRequestError = require("../errors/badRequestError");
+const NotFoundError = require("../errors/notFoundError");
+const UnauthorizedError = require("../errors/unauthorizedError");
+const ForbiddenError = require("../errors/forBiddenError");
+const ConflictError = require("../errors/conflictError");
 
 // create method to perform post operation to add new items to DB
 const addItem = (req, res) => {
@@ -62,32 +66,44 @@ const deleteItem = (req, res) => {
         })
         .catch((err) => {
           if (err.name === "DocumentNotFoundError") {
-            // send the error
-            res.status(statusCode.NOT_FOUND).send({
-              message: "Not found",
-            });
+            next(new NotFoundError("Not Found"));
           } else if (err.name === "CastError") {
-            res.status(statusCode.BAD_REQUEST).send({
-              message: "CastError",
-            });
+            next(new BadRequestError("CastError"));
           } else {
-            res
-              .status(statusCode.DEFAULT)
-              .send({ message: "Error from delete item" });
+            next(err);
+          }
+        })
+        //     .catch((err) => {
+        //       if (err.name === "DocumentNotFoundError") {
+        //         // send the error
+        //         res.status(statusCode.NOT_FOUND).send({
+        //           message: "Not found",
+        //         });
+        //       } else if (err.name === "CastError") {
+        //         res.status(statusCode.BAD_REQUEST).send({
+        //           message: "CastError",
+        //         });
+        //       } else {
+        //         res
+        //           .status(statusCode.DEFAULT)
+        //           .send({ message: "Error from delete item" });
+        //       }
+        //     });
+        // })
+        .catch((e) => {
+          if (e.name === "DocumentNotFoundError") {
+            // send the error
+            // res.status(statusCode.NOT_FOUND).send({
+            //   message: "Not found",
+            // });
+            next(new NotFoundError("Not Found"));
+          } else if (e.name === "CastError") {
+            // res.status(statusCode.BAD_REQUEST).send({
+            //   message: "CastError",
+            // });
+            next(new BadRequestError("CastError"));
           }
         });
-    })
-    .catch((e) => {
-      if (e.name === "DocumentNotFoundError") {
-        // send the error
-        res.status(statusCode.NOT_FOUND).send({
-          message: "Not found",
-        });
-      } else if (e.name === "CastError") {
-        res.status(statusCode.BAD_REQUEST).send({
-          message: "CastError",
-        });
-      }
     });
 };
 
@@ -103,20 +119,23 @@ const likeAnItem = (req, res) => {
     .then((item) => {
       res.send({ data: item });
     })
-    .catch((e) => {
-      if (e.name === "CastError") {
+    .catch((err) => {
+      if (err.name === "CastError") {
         // send the error
-        res.status(statusCode.BAD_REQUEST).send({
-          message: "Cast error",
-        });
-      } else if (e.name === "DocumentNotFoundError") {
-        res.status(statusCode.NOT_FOUND).send({
-          message: "Not found",
-        });
+        // res.status(statusCode.BAD_REQUEST).send({
+        //   message: "Cast error",
+        // });
+        next(new BadRequestError("CastError"));
+      } else if (err.name === "DocumentNotFoundError") {
+        // res.status(statusCode.NOT_FOUND).send({
+        //   message: "Not found",
+        // });
+        next(new NotFoundError("Not Found"));
       } else {
-        res
-          .status(statusCode.DEFAULT)
-          .send({ message: "Error from likeAnItem" });
+        // res
+        //   .status(statusCode.DEFAULT)
+        //   .send({ message: "Error from likeAnItem" });
+        next(err);
       }
     });
 };
@@ -133,20 +152,23 @@ const unlikeAnItem = (req, res) => {
     .then((item) => {
       res.send({ data: item });
     })
-    .catch((e) => {
-      if (e.name === "CastError") {
+    .catch((err) => {
+      if (err.name === "CastError") {
         // send the error
-        res.status(statusCode.BAD_REQUEST).send({
-          message: "cast error",
-        });
-      } else if (e.name === "DocumentNotFoundError") {
-        res.status(statusCode.NOT_FOUND).send({
-          message: "Not Found",
-        });
+        // res.status(statusCode.BAD_REQUEST).send({
+        //   message: "cast error",
+        // });
+        next(new BadRequestError("CastError"));
+      } else if (err.name === "DocumentNotFoundError") {
+        // res.status(statusCode.NOT_FOUND).send({
+        //   message: "Not Found",
+        // });
+        next(new NotFoundError("Not Found"));
       } else {
-        res
-          .status(statusCode.DEFAULT)
-          .send({ message: "Error from likeAnItem" });
+        // res
+        //   .status(statusCode.DEFAULT)
+        //   .send({ message: "Error from likeAnItem" });
+        next(err);
       }
     });
 };
