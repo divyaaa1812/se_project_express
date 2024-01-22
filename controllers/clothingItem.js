@@ -3,9 +3,7 @@ const ClothingItem = require("../models/clothingItem");
 const statusCode = require("../utils/constants");
 const BadRequestError = require("../errors/badRequestError");
 const NotFoundError = require("../errors/notFoundError");
-const UnauthorizedError = require("../errors/unauthorizedError");
 const ForbiddenError = require("../errors/forBiddenError");
-const ConflictError = require("../errors/conflictError");
 
 // create method to perform post operation to add new items to DB
 const addItem = (req, res) => {
@@ -39,10 +37,11 @@ const getItems = (req, res) => {
   ClothingItem.find({})
     .orFail()
     .then((items) => res.send(items))
-    .catch(() => {
-      res
-        .status(statusCode.DEFAULT)
-        .send({ message: "Error from get clothing item" });
+    .catch((e) => {
+      // res
+      //   .status(statusCode.DEFAULT)
+      //   .send({ message: "Error from get clothing item" });
+      next(err);
     });
 };
 
@@ -57,6 +56,7 @@ const deleteItem = (req, res) => {
         return res
           .status(statusCode.FORBIDDEN)
           .send({ message: "No Access to perform this action" });
+        // next(new ForbiddenError("No Access to perform this action"));
       }
       // else find by item id and delete
       ClothingItem.findByIdAndDelete(itemId)

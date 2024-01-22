@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const users = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const statusCode = require("../utils/constants");
+const UnauthorizedError = require("../errors/unauthorizedError");
+const ConflictError = require("../errors/conflictError");
 
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
@@ -12,9 +14,10 @@ const createUser = (req, res) => {
     .select("+password")
     .then((existingUser) => {
       if (existingUser) {
-        res
-          .status(statusCode.DUPLICATE_RECORD)
-          .send({ message: "This email already exists in Database" });
+        // res
+        //   .status(statusCode.DUPLICATE_RECORD)
+        //   .send({ message: "This email already exists in Database" });
+        next(new UnauthorizedError("This email already exists in Database"));
       } else {
         bcrypt.hash(password, 10).then((hash) =>
           users
@@ -26,9 +29,10 @@ const createUser = (req, res) => {
             })
             .catch((e) => {
               if (e.name && e.name === "ValidationError") {
-                return res
-                  .status(statusCode.BAD_REQUEST)
-                  .send({ message: "Bad Request" });
+                // return res
+                //   .status(statusCode.BAD_REQUEST)
+                //   .send({ message: "Bad Request" });
+                next(new BadRequestError("ValidationError"));
               }
               return res
                 .status(statusCode.DEFAULT)
