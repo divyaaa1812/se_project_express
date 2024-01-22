@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const routes = require("./routes");
 const errorHandler = require("./middlewares/errorHandler");
+const { errors } = require("celebrate");
 
 // instance of express application
 const app = express();
@@ -24,6 +25,9 @@ app.use(
 // app.use(cors());
 // app.options("*", cors());
 app.use(routes);
+// celebrate error handler
+app.use(errors());
+// centralized error handler
 app.use(errorHandler);
 
 // calling server by passing in port variable
