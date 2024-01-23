@@ -38,9 +38,10 @@ const getItems = (req, res) => {
     .orFail()
     .then((items) => res.send(items))
     .catch((e) => {
-      res
-        .status(statusCode.DEFAULT)
-        .send({ message: "Error from get clothing item" });
+      // res
+      //   .status(statusCode.DEFAULT)
+      //   .send({ message: "Error from get clothing item" });
+      next(e);
     });
 };
 
