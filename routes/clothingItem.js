@@ -1,6 +1,8 @@
 // import router to work with CRUD operations
 const router = require("express").Router();
 const handleAuthorization = require("../middlewares/auth");
+const handleErrors = require("../middlewares/errorHandler");
+
 const {
   addItem,
   getItems,
@@ -11,7 +13,7 @@ const {
 
 // add post to clothing item
 router.post("/", handleAuthorization, addItem);
-router.get("/", getItems);
+router.get("/", handleErrors, getItems);
 // router.put("/:itemId", updateItem);
 router.delete("/:itemId", handleAuthorization, deleteItem);
 router.put("/:itemId/likes", handleAuthorization, likeAnItem);

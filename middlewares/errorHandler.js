@@ -1,7 +1,4 @@
-const express = require("express");
-
-const app = express();
-const handleError = app.use((err, req, res, next) => {
+const handleError = (err, req, res, next) => {
   console.error(err);
   if (err.statusCode !== 500) {
     res.status(err.statusCode).send({ message: err.message });
@@ -12,6 +9,7 @@ const handleError = app.use((err, req, res, next) => {
       message: statusCode === 500 ? "An error occurred on the server" : message,
     });
   }
-});
+  next();
+};
 
 module.exports = handleError;
