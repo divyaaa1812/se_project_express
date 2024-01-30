@@ -1,8 +1,8 @@
 const express = require("express");
 const auth = require("../middlewares/auth");
-const validateUserUpdate = require("../middlewares/validation");
 const handleAuthorization = require("../middlewares/auth");
 const { getCurrentUser, updateUser } = require("../controllers/user");
+const { validateUserUpdate } = require("../middlewares/validation");
 
 const router = express.Router();
 
@@ -11,6 +11,6 @@ const router = express.Router();
 // router.get("/:userId", getUserById);
 // router.post("/", createUser);
 router.get("/me", handleAuthorization, getCurrentUser);
-router.patch("/me", handleAuthorization, updateUser);
+router.patch("/me", handleAuthorization, validateUserUpdate, updateUser);
 
 module.exports = router;
