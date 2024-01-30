@@ -7,6 +7,7 @@ const { errors } = require("celebrate");
 const routes = require("./routes");
 const errorHandler = require("./middlewares/errorHandler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+const helmet = require("helmet");
 
 // instance of express application
 const app = express();
@@ -42,6 +43,8 @@ app.use(errorLogger);
 app.use(errors());
 // centralized error handler
 app.use(errorHandler);
+// protect app from some well-known web vulnerabilities by setting HTTP headers appropriately
+app.use(helmet());
 
 // calling server by passing in port variable
 app.listen(PORT, () => {
