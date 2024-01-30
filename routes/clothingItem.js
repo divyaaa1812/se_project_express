@@ -2,7 +2,10 @@
 const router = require("express").Router();
 const handleAuthorization = require("../middlewares/auth");
 const handleErrors = require("../middlewares/errorHandler");
-const { validateCreateUser, validateId } = require("../middlewares/validation");
+const {
+  validateCreateClothingItem,
+  validateId,
+} = require("../middlewares/validation");
 
 const {
   addItem,
@@ -13,7 +16,7 @@ const {
 } = require("../controllers/clothingItem");
 
 // add post to clothing item
-router.post("/", handleAuthorization, validateCreateUser, addItem);
+router.post("/", handleAuthorization, validateCreateClothingItem, addItem);
 router.get("/", handleErrors, getItems);
 // router.put("/:itemId", updateItem);
 router.delete("/:itemId", handleAuthorization, validateId, deleteItem);

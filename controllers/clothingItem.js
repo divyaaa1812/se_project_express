@@ -13,23 +13,13 @@ const addItem = (req, res, next) => {
     .then((item) => {
       res.send({ data: item });
     })
-    .catch((err) => {
-      if (err.name === "CastError") {
+    .catch((e) => {
+      if (e.name === "CastError") {
         next(new BadRequestError("Invalid request data"));
       } else {
-        next(err);
+        next(e);
       }
     });
-  // .catch((e) => {
-  //   console.log(e);
-  //   if (e.name === "ValidationError") {
-  //     res.status(statusCode.BAD_REQUEST).send({
-  //       message: `Invalid request data`,
-  //     });
-  //   } else {
-  //     res.status(statusCode.DEFAULT).send({ message: "Error adding item" });
-  //   }
-  // });
 };
 
 // create method to perform get operation to retrieve items from DB
@@ -42,9 +32,6 @@ const getItems = (req, res, next) => {
     })
     .catch((e) => {
       next(e);
-      //   res
-      //     .status(statusCode.DEFAULT)
-      //     .send({ message: "Error from get clothing item" });
     });
 };
 
@@ -58,47 +45,50 @@ const deleteItem = (req, res, next) => {
       if (userId !== item.owner.toString()) {
         next(new ForbiddenError("No Access to perform this action"));
       }
-      // else find by item id and delete
-      ClothingItem.findByIdAndDelete(itemId)
-        .orFail()
-        .then(() => {
-          res.status(statusCode.SUCCESS).send({ message: "200 Ok" });
-        })
-        .catch((err) => {
-          if (err.name === "DocumentNotFoundError") {
-            next(new NotFoundError("Not Found"));
-          } else if (err.name === "CastError") {
-            next(new BadRequestError("CastError"));
-          } else {
-            next(err);
-          }
-        })
-        //     .catch((err) => {
-        //       if (err.name === "DocumentNotFoundError") {
-        //         // send the error
-        //         res.status(statusCode.NOT_FOUND).send({
-        //           message: "Not found",
-        //         });
-        //       } else if (err.name === "CastError") {
-        //         res.status(statusCode.BAD_REQUEST).send({
-        //           message: "CastError",
-        //         });
-        //       } else {
-        //         res
-        //           .status(statusCode.DEFAULT)
-        //           .send({ message: "Error from delete item" });
-        //       }
-        //     });
-        // })
-        .catch((e) => {
-          if (e.name === "DocumentNotFoundError") {
-            next(new NotFoundError("Not Found"));
-          } else if (e.name === "CastError") {
-            next(new BadRequestError("CastError"));
-          }
-        });
+    })
+    .catch((e) => {
+      if (e.name === "DocumentNotFoundError") {
+        next(new NotFoundError("Not Found"));
+      } else if (e.name === "CastError") {
+        next(new BadRequestError("CastError"));
+      } else {
+        next(e);
+      }
+    });
+  // else find by item id and delete
+  return ClothingItem.findByIdAndDelete(itemId)
+    .orFail()
+    .then(() => {
+      res.status(statusCode.SUCCESS).send({ message: "200 Ok" });
     });
 };
+// .catch((err) => {
+//   if (err.name === "DocumentNotFoundError") {
+//     next(new NotFoundError("Not Found"));
+//   } else if (err.name === "CastError") {
+//     next(new BadRequestError("CastError"));
+//   } else {
+//     next(err);
+//   }
+// })
+//     .catch((err) => {
+//       if (err.name === "DocumentNotFoundError") {
+//         // send the error
+//         res.status(statusCode.NOT_FOUND).send({
+//           message: "Not found",
+//         });
+//       } else if (err.name === "CastError") {
+//         res.status(statusCode.BAD_REQUEST).send({
+//           message: "CastError",
+//         });
+//       } else {
+//         res
+//           .status(statusCode.DEFAULT)
+//           .send({ message: "Error from delete item" });
+//       }
+//     });
+// })
+// });
 
 // like an item
 const likeAnItem = (req, res, next) => {
@@ -112,13 +102,13 @@ const likeAnItem = (req, res, next) => {
     .then((item) => {
       res.send({ data: item });
     })
-    .catch((err) => {
-      if (err.name === "CastError") {
+    .catch((e) => {
+      if (e.name === "CastError") {
         next(new BadRequestError("CastError"));
-      } else if (err.name === "DocumentNotFoundError") {
+      } else if (e.name === "DocumentNotFoundError") {
         next(new NotFoundError("Not Found"));
       } else {
-        next(err);
+        next(e);
       }
     });
 };
@@ -135,13 +125,13 @@ const unlikeAnItem = (req, res, next) => {
     .then((item) => {
       res.send({ data: item });
     })
-    .catch((err) => {
-      if (err.name === "CastError") {
+    .catch((e) => {
+      if (e.name === "CastError") {
         next(new BadRequestError("CastError"));
-      } else if (err.name === "DocumentNotFoundError") {
+      } else if (e.name === "DocumentNotFoundError") {
         next(new NotFoundError("Not Found"));
       } else {
-        next(err);
+        next(e);
       }
     });
 };
