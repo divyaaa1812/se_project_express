@@ -14,7 +14,7 @@ const addItem = (req, res, next) => {
       res.send({ data: item });
     })
     .catch((e) => {
-      if (e.name === "CastError") {
+      if (e.name === "ValidationError") {
         next(new BadRequestError("Invalid request data"));
       } else {
         next(e);
