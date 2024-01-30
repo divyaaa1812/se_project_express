@@ -36,7 +36,10 @@ const addItem = (req, res) => {
 const getItems = (req, res, next) => {
   ClothingItem.find({})
     .orFail()
-    .then((items) => res.send(items))
+    .then((items) => {
+      console.log(items);
+      res.send(items);
+    })
     .catch((e) => {
       next(e);
       //   res

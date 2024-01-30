@@ -6,15 +6,15 @@ const errorHandler = require("./middlewares/errorHandler");
 const { errors } = require("celebrate");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
+// instance of express application
+const app = express();
+const { PORT = 3001 } = process.env;
+
 app.get("/crash-test", () => {
   setTimeout(() => {
     throw new Error("Server will crash now");
   }, 0);
 });
-
-// instance of express application
-const app = express();
-const { PORT = 3001 } = process.env;
 
 // connect db
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db", () => {
