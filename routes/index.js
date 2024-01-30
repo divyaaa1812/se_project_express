@@ -3,6 +3,7 @@ const clothingItem = require("./clothingItem");
 const users = require("./user");
 const { createUser, login } = require("../controllers/user");
 const handleAuthorization = require("../middlewares/auth");
+const NotFoundError = require("../errors/NotFoundError");
 
 router.use("/users", handleAuthorization, users);
 router.use("/items", clothingItem);

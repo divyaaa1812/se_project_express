@@ -6,7 +6,7 @@ const NotFoundError = require("../errors/NotFoundError");
 const ForbiddenError = require("../errors/ForBiddenError");
 
 // create method to perform post operation to add new items to DB
-const addItem = (req, res) => {
+const addItem = (req, res, next) => {
   // extract data from body request
   const { name, weather, imageUrl } = req.body;
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })

@@ -1,5 +1,4 @@
 const express = require("express");
-const auth = require("../middlewares/auth");
 const handleAuthorization = require("../middlewares/auth");
 const { getCurrentUser, updateUser } = require("../controllers/user");
 const { validateUserUpdate } = require("../middlewares/validation");

@@ -1,11 +1,11 @@
 require("dotenv").config();
-const { NODE_ENV, JWT_SECRET } = process.env;
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const { errors } = require("celebrate");
 const routes = require("./routes");
 const errorHandler = require("./middlewares/errorHandler");
-const { errors } = require("celebrate");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 // instance of express application
@@ -33,7 +33,7 @@ app.use(
 );
 // app.use(cors());
 // app.options("*", cors());
-//enable the loggers
+// enable the loggers
 app.use(requestLogger);
 app.use(routes);
 // enabling the error logger
