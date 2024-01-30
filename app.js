@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const helmet = require("helmet");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -7,7 +8,6 @@ const { errors } = require("celebrate");
 const routes = require("./routes");
 const errorHandler = require("./middlewares/errorHandler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
-const helmet = require("helmet");
 
 // instance of express application
 const app = express();
