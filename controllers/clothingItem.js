@@ -27,7 +27,6 @@ const getItems = (req, res, next) => {
   ClothingItem.find({})
     .orFail()
     .then((items) => {
-      console.log(items);
       res.send(items);
     })
     .catch((e) => {
@@ -62,33 +61,6 @@ const deleteItem = (req, res, next) => {
       res.status(statusCode.SUCCESS).send({ message: "200 Ok" });
     });
 };
-// .catch((err) => {
-//   if (err.name === "DocumentNotFoundError") {
-//     next(new NotFoundError("Not Found"));
-//   } else if (err.name === "CastError") {
-//     next(new BadRequestError("CastError"));
-//   } else {
-//     next(err);
-//   }
-// })
-//     .catch((err) => {
-//       if (err.name === "DocumentNotFoundError") {
-//         // send the error
-//         res.status(statusCode.NOT_FOUND).send({
-//           message: "Not found",
-//         });
-//       } else if (err.name === "CastError") {
-//         res.status(statusCode.BAD_REQUEST).send({
-//           message: "CastError",
-//         });
-//       } else {
-//         res
-//           .status(statusCode.DEFAULT)
-//           .send({ message: "Error from delete item" });
-//       }
-//     });
-// })
-// });
 
 // like an item
 const likeAnItem = (req, res, next) => {
