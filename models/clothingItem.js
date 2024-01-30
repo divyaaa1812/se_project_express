@@ -12,7 +12,7 @@ const clothingitems = new mongoose.Schema({
   weather: {
     type: String,
     required: true,
-    enum: ["Cold", "Hot", "Warm"],
+    enum: ["cold", "hot", "warm"],
     lowercase: true,
   },
   imageUrl: {
