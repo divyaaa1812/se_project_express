@@ -1,4 +1,5 @@
-require("dotnet").config();
+require("dotenv").config();
+const { NODE_ENV, JWT_SECRET } = process.env;
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
