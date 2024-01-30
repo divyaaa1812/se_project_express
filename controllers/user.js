@@ -4,19 +4,17 @@ const jwt = require("jsonwebtoken");
 const users = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const statusCode = require("../utils/constants");
-const UnauthorizedError = require("../errors/unauthorizedError");
-const ConflictError = require("../errors/conflictError");
+const UnauthorizedError = require("../errors/UnauthorizedError");
+const BadRequestError = require("../errors/BadRequestError");
+const NotFoundError = require("../errors/NotFoundError");
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
   users
     .findOne({ email })
     .select("+password")
     .then((existingUser) => {
       if (existingUser) {
-        // res
-        //   .status(statusCode.DUPLICATE_RECORD)
-        //   .send({ message: "This email already exists in Database" });
         next(new UnauthorizedError("This email already exists in Database"));
       } else {
         bcrypt.hash(password, 10).then((hash) =>
@@ -28,32 +26,24 @@ const createUser = (req, res) => {
                 .send({ name, avatar, email, _id: newUser._id });
             })
             .catch((e) => {
-              if (e.name && e.name === "ValidationError") {
-                // return res
-                //   .status(statusCode.BAD_REQUEST)
-                //   .send({ message: "Bad Request" });
-                next(new BadRequestError("ValidationError"));
+              if (e.name === "ValidationError") {
+                next(new BadRequestError(e.message));
               }
-              return res
-                .status(statusCode.DEFAULT)
-                .send({ message: "Server Error" });
+              next(e);
             }),
         );
       }
     })
     .catch((e) => {
       if (e.name === "ValidationError") {
-        return res
-          .status(statusCode.BAD_REQUEST)
-          .send({ message: "Bad Request" });
+        next(new BadRequestError(e.message));
+      } else {
+        next(e);
       }
-      return res.status(statusCode.DEFAULT).send({ message: "Server Error" });
     });
 };
 
-// controllers/users.js
-
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   return users
     .findUserByCredentials(email, password)
@@ -66,15 +56,14 @@ const login = (req, res) => {
     })
     .catch((e) => {
       if (e.message === "Incorrect email or password") {
-        return res
-          .status(statusCode.AUTHORIZATION_ERROR)
-          .send({ message: "Authorization Error" });
+        next(new UnauthorizedError("Invalid login"));
+      } else {
+        next(e);
       }
-      return res.status(statusCode.DEFAULT).send({ message: "Server Error" });
     });
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
   users
     .findById(userId)
@@ -84,22 +73,16 @@ const getCurrentUser = (req, res) => {
     })
     .catch((e) => {
       if (e.name === "DocumentNotFoundError") {
-        res.status(statusCode.NOT_FOUND).send({
-          message: "User Not Found",
-        });
+        next(new NotFoundError("User not found"));
       } else if (e.name === "CastError") {
-        res.status(statusCode.BAD_REQUEST).send({
-          message: "Invalid request.",
-        });
+        next(new BadRequestError("Invalid request"));
       } else {
-        res
-          .status(statusCode.DEFAULT)
-          .send({ message: "An error has occurred on the server." });
+        next(e);
       }
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
   const userId = req.user._id;
   users
@@ -111,23 +94,15 @@ const updateUser = (req, res) => {
     .then((userupdate) => {
       res.send(userupdate);
     })
-    .catch((err) => {
-      if (err.name === "DocumentNotFoundError") {
-        res.status(statusCode.NOT_FOUND).send({
-          message: "No records",
-        });
-      } else if (err.name === "CastError") {
-        res.status(statusCode.BAD_REQUEST).send({
-          message: "Invalid Request data.",
-        });
-      } else if (err.name === "ValidationError") {
-        res.status(statusCode.BAD_REQUEST).send({
-          message: "validation error.",
-        });
+    .catch((e) => {
+      if (e.name === "DocumentNotFoundError") {
+        next(new NotFoundError("No records"));
+      } else if (e.name === "CastError") {
+        next(new BadRequestError("Invalid request"));
+      } else if (e.name === "ValidationError") {
+        next(new BadRequestError("Invalid request"));
       } else {
-        res
-          .status(statusCode.DEFAULT)
-          .send({ message: "An error has occurred on the server." });
+        next(e);
       }
     });
 };

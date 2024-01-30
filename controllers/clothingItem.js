@@ -1,9 +1,9 @@
 // create controllers
 const ClothingItem = require("../models/clothingItem");
 const statusCode = require("../utils/constants");
-const BadRequestError = require("../errors/badRequestError");
-const NotFoundError = require("../errors/notFoundError");
-const ForbiddenError = require("../errors/forBiddenError");
+const BadRequestError = require("../errors/BadRequestError");
+const NotFoundError = require("../errors/NotFoundError");
+const ForbiddenError = require("../errors/ForBiddenError");
 
 // create method to perform post operation to add new items to DB
 const addItem = (req, res) => {
@@ -33,18 +33,19 @@ const addItem = (req, res) => {
 };
 
 // create method to perform get operation to retrieve items from DB
-const getItems = (req, res) => {
+const getItems = (req, res, next) => {
   ClothingItem.find({})
     .orFail()
     .then((items) => res.send(items))
     .catch((e) => {
-      res
-        .status(statusCode.DEFAULT)
-        .send({ message: "Error from get clothing item" });
+      next(e);
+      //   res
+      //     .status(statusCode.DEFAULT)
+      //     .send({ message: "Error from get clothing item" });
     });
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
   ClothingItem.findById(itemId)
@@ -52,10 +53,7 @@ const deleteItem = (req, res) => {
     .then((item) => {
       // If logged in user is not owner of the clothing item
       if (userId !== item.owner.toString()) {
-        return res
-          .status(statusCode.FORBIDDEN)
-          .send({ message: "No Access to perform this action" });
-        // next(new ForbiddenError("No Access to perform this action"));
+        next(new ForbiddenError("No Access to perform this action"));
       }
       // else find by item id and delete
       ClothingItem.findByIdAndDelete(itemId)
@@ -91,15 +89,8 @@ const deleteItem = (req, res) => {
         // })
         .catch((e) => {
           if (e.name === "DocumentNotFoundError") {
-            // send the error
-            // res.status(statusCode.NOT_FOUND).send({
-            //   message: "Not found",
-            // });
             next(new NotFoundError("Not Found"));
           } else if (e.name === "CastError") {
-            // res.status(statusCode.BAD_REQUEST).send({
-            //   message: "CastError",
-            // });
             next(new BadRequestError("CastError"));
           }
         });
@@ -107,7 +98,7 @@ const deleteItem = (req, res) => {
 };
 
 // like an item
-const likeAnItem = (req, res) => {
+const likeAnItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     // add _id to the array if it's not there yet
@@ -120,27 +111,17 @@ const likeAnItem = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        // send the error
-        // res.status(statusCode.BAD_REQUEST).send({
-        //   message: "Cast error",
-        // });
         next(new BadRequestError("CastError"));
       } else if (err.name === "DocumentNotFoundError") {
-        // res.status(statusCode.NOT_FOUND).send({
-        //   message: "Not found",
-        // });
         next(new NotFoundError("Not Found"));
       } else {
-        // res
-        //   .status(statusCode.DEFAULT)
-        //   .send({ message: "Error from likeAnItem" });
         next(err);
       }
     });
 };
 
 // Dislike an item
-const unlikeAnItem = (req, res) => {
+const unlikeAnItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     // remove _id from the array
@@ -153,20 +134,10 @@ const unlikeAnItem = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        // send the error
-        // res.status(statusCode.BAD_REQUEST).send({
-        //   message: "cast error",
-        // });
         next(new BadRequestError("CastError"));
       } else if (err.name === "DocumentNotFoundError") {
-        // res.status(statusCode.NOT_FOUND).send({
-        //   message: "Not Found",
-        // });
         next(new NotFoundError("Not Found"));
       } else {
-        // res
-        //   .status(statusCode.DEFAULT)
-        //   .send({ message: "Error from likeAnItem" });
         next(err);
       }
     });
