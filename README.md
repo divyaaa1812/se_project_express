@@ -24,18 +24,4 @@ React JS, Express, MongoDB
 
 ### Website Link
 
-- [Link to the webpage](https://divyaaa1812.github.io/se_project_react)
-
-### Images
-
-### Desktop View
-
-![Desktop View](https://github.com/divyaaa1812/se_project_react/blob/main/Website/WTWR.png?raw=true)
-
-### Popup when click on Add Clothes button
-
-![Popup when click on Add Clothes button](https://github.com/divyaaa1812/se_project_react/blob/main/Website/AddClothespopup.png?raw=true)
-
-### Popup when user clicks on garmet image
-
-![Popup when user clicks on garmet image](https://github.com/divyaaa1812/se_project_react/blob/main/Website/clickonImage.png?raw=true)
+- [Link to the webpage](https://wtwrdivya.crabdance.com/#/)
