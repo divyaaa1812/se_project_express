@@ -5,8 +5,8 @@ const users = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const statusCode = require("../utils/constants");
 const UnauthorizedError = require("../errors/unauthorizedError");
-const BadRequestError = require("../errors/badrequestError");
-const NotFoundError = require("../errors/notfoundError");
+const BadRequestError = require("../errors/badRequestError");
+const NotFoundError = require("../errors/notFoundError");
 const ConflictError = require("../errors/conflictError");
 
 const createUser = (req, res, next) => {

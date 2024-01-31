@@ -1,8 +1,8 @@
 // create controllers
 const ClothingItem = require("../models/clothingItem");
 const statusCode = require("../utils/constants");
-const BadRequestError = require("../errors/badrequestError");
-const NotFoundError = require("../errors/notfoundError");
+const BadRequestError = require("../errors/badRequestError");
+const NotFoundError = require("../errors/notFoundError");
 const ForbiddenError = require("../errors/forbiddenError");
 
 // create method to perform post operation to add new items to DB
