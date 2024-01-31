@@ -11,7 +11,7 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 // instance of express application
 const app = express();
-const { PORT = 3001 } = process.env.NODE_ENV;
+const { PORT = 3001 } = process.env;
 
 app.get("/crash-test", () => {
   setTimeout(() => {
