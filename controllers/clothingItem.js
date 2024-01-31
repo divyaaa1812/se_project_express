@@ -44,6 +44,12 @@ const deleteItem = (req, res, next) => {
       if (userId !== item.owner.toString()) {
         next(new ForbiddenError("No Access to perform this action"));
       }
+      // else find by item id and delete
+      return ClothingItem.findByIdAndDelete(itemId)
+        .orFail()
+        .then(() => {
+          res.status(statusCode.SUCCESS).send({ message: "200 Ok" });
+        });
     })
     .catch((e) => {
       if (e.name === "DocumentNotFoundError") {
@@ -53,12 +59,6 @@ const deleteItem = (req, res, next) => {
       } else {
         next(e);
       }
-    });
-  // else find by item id and delete
-  return ClothingItem.findByIdAndDelete(itemId)
-    .orFail()
-    .then(() => {
-      res.status(statusCode.SUCCESS).send({ message: "200 Ok" });
     });
 };
 
