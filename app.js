@@ -24,16 +24,14 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db", () => {
   console.log("connected to DB");
 });
 
-// define routes
-app.use(express.json());
 app.use(
   cors({
     origin: "*",
     methods: "*",
   }),
 );
-// app.use(cors());
-// app.options("*", cors());
+app.options("*", cors());
+app.use(express.json());
 
 // protect app from some well-known web vulnerabilities by setting HTTP headers appropriately
 app.use(helmet());
