@@ -34,6 +34,9 @@ app.use(
 );
 // app.use(cors());
 // app.options("*", cors());
+
+// protect app from some well-known web vulnerabilities by setting HTTP headers appropriately
+app.use(helmet());
 // enable the loggers
 app.use(requestLogger);
 app.use(routes);
@@ -43,8 +46,6 @@ app.use(errorLogger);
 app.use(errors());
 // centralized error handler
 app.use(errorHandler);
-// protect app from some well-known web vulnerabilities by setting HTTP headers appropriately
-app.use(helmet());
 
 // calling server by passing in port variable
 app.listen(PORT, () => {
