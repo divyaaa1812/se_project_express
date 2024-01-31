@@ -30,6 +30,7 @@ const getItems = (req, res, next) => {
       res.send(items);
     })
     .catch((e) => {
+      console.log(e.message);
       next(e);
     });
 };
