@@ -25,7 +25,6 @@ const addItem = (req, res, next) => {
 // create method to perform get operation to retrieve items from DB
 const getItems = (req, res, next) => {
   ClothingItem.find({})
-    .orFail()
     .then((items) => {
       res.send(items);
     })
