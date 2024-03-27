@@ -26,13 +26,13 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db", () => {
   console.log("connected to DB");
 });
 
-app.use(
-  cors({
-    origin: "https://wtwrdivya.crabdance.com",
-    methods: "*",
-  }),
-);
-app.options("*", cors());
+// app.use(
+//   cors({
+//     origin: "https://wtwrdivya.crabdance.com",
+//     methods: "*",
+//   }),
+// );
+// app.options("*", cors());
 app.use(express.json());
 
 // protect app from some well-known web vulnerabilities by setting HTTP headers appropriately
